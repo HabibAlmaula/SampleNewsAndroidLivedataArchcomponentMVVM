@@ -6,23 +6,33 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 
 import com.pratamawijaya.androidnewsarch.R
+import com.pratamawijaya.androidnewsarch.domain.model.Article
+import com.pratamawijaya.androidnewsarch.ui.news.rvitem.NewsItem
+import com.pratamawijaya.androidnewsarch.ui.news.rvitem.NewsListener
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
+import com.xwray.groupie.ViewHolder
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.news_list_fragment.*
 import javax.inject.Inject
 
 private val TAG = NewsListFragment::class.java.name
 
-class NewsListFragment : Fragment() {
+class NewsListFragment : Fragment(), NewsListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: NewsListViewModel
+    private val groupAdapter = GroupAdapter<ViewHolder>()
 
     companion object {
         fun newInstance() = NewsListFragment()
@@ -36,6 +46,15 @@ class NewsListFragment : Fragment() {
                     it.data.map {
                         Log.d(TAG, "data -> ${it.title} ${it.sourceName}")
                     }
+
+                    // add data to adapter
+                    it.data.map {
+                        Section().apply {
+                            add(NewsItem(it, this@NewsListFragment))
+                            groupAdapter.add(this)
+                        }
+                    }
+
                 }
                 is LoadingState -> {
                     Log.d(TAG, "loading state")
@@ -62,8 +81,17 @@ class NewsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NewsListViewModel::class.java)
 
+        setupRv()
+
         observerViewModel()
         viewModel.updateNewsList()
+    }
+
+    private fun setupRv() {
+        rvNews.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = groupAdapter
+        }
     }
 
     private fun observerViewModel() {
@@ -73,6 +101,10 @@ class NewsListFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.stateLiveData.removeObserver(stateObserver)
+    }
+
+    override fun onNewsClick(article: Article) {
+        Toast.makeText(activity, article.title, Toast.LENGTH_SHORT).show()
     }
 
 }

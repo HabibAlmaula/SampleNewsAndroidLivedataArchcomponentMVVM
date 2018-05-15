@@ -36,11 +36,11 @@ class NewsListViewModel @Inject constructor(private val repo: NewsRepository) : 
     }
 
     private fun onNewsReceived(news: List<Article>) {
+        Log.d(TAG, "data news received ${news.size}")
         val currentNews = obtainCurrentData().toMutableList()
         currentNews.addAll(news)
-        stateLiveData.value = DefaultState(obtainCurrentData())
+        stateLiveData.value = DefaultState(currentNews)
     }
-
 
     private fun obtainCurrentData() = stateLiveData.value?.data ?: emptyList()
 }
