@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,13 +27,14 @@ import javax.inject.Inject
 
 private val TAG = NewsListFragment::class.java.name
 
-class NewsListFragment : Fragment(), NewsListener {
+class NewsListFragment : Fragment(), NewsListener, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: NewsListViewModel
     private val groupAdapter = GroupAdapter<ViewHolder>()
+    private var isLoading = false
 
     companion object {
         fun newInstance() = NewsListFragment()
@@ -43,6 +45,9 @@ class NewsListFragment : Fragment(), NewsListener {
         state?.let {
             when (state) {
                 is DefaultState -> {
+                    isLoading = false
+                    loading.isRefreshing = false
+
                     it.data.map {
                         Log.d(TAG, "data -> ${it.title} ${it.sourceName}")
                     }
@@ -58,6 +63,8 @@ class NewsListFragment : Fragment(), NewsListener {
                 }
                 is LoadingState -> {
                     Log.d(TAG, "loading state")
+                    loading.isRefreshing = true
+                    isLoading = true
                 }
 
                 is ErrorState -> {
@@ -68,8 +75,8 @@ class NewsListFragment : Fragment(), NewsListener {
     }
 
     override fun onAttach(context: Context?) {
-        super.onAttach(context)
         AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -82,9 +89,12 @@ class NewsListFragment : Fragment(), NewsListener {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NewsListViewModel::class.java)
 
         setupRv()
+        loading.setOnRefreshListener(this)
 
         observerViewModel()
-        viewModel.updateNewsList()
+        savedInstanceState?.let {
+            viewModel.restoreNewsList()
+        } ?: viewModel.updateNewsList()
     }
 
     private fun setupRv() {
@@ -105,6 +115,11 @@ class NewsListFragment : Fragment(), NewsListener {
 
     override fun onNewsClick(article: Article) {
         Toast.makeText(activity, article.title, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRefresh() {
+        groupAdapter.clear()
+        viewModel.updateNewsList()
     }
 
 }
