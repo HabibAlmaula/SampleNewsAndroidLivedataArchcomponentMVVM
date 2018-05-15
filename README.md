@@ -15,3 +15,7 @@ selain itu pada project ini juga telah menerapkan Dagger 2 untuk Dependency Inje
 # Todo
 [ ] create fragment for detail news
 [ ] implementation navigation component
+
+## Reference
+- https://github.com/antonicg/cryptodata
+- ADB
