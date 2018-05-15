@@ -17,7 +17,9 @@ selain itu pada project ini juga telah menerapkan Dagger 2 untuk Dependency Inje
 
 # Todo
 - [ ] create fragment for detail news
-- [ ] implementation navigation component
+- [ ] implement navigation component
+- [ ] implement room for save data locally
+- [ ] favorite feature
 
 ## Reference
 - https://github.com/antonicg/cryptodata
