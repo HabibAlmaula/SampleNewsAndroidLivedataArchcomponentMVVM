@@ -9,6 +9,8 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
+const val API_KEY = "4b4df2ea3a154950852b6fda536cfb7f"
+
 @Module
 class NetworkModule {
 
@@ -32,6 +34,10 @@ class NetworkModule {
         }
         return OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .addInterceptor({ chain ->
+                    val request = chain.request().newBuilder().addHeader("X-Api-Key", API_KEY).build()
+                    chain.proceed(request)
+                })
                 .build()
     }
 }

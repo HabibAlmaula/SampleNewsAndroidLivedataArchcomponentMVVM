@@ -1,14 +1,27 @@
 package com.pratamawijaya.androidnewsarch.data.repository
 
+import com.pratamawijaya.androidnewsarch.data.NewsServices
 import com.pratamawijaya.androidnewsarch.domain.model.Article
 import io.reactivex.Single
-import javax.inject.Inject
 
-class NewsRepositoryImpl @Inject constructor(val repo: NewsRepository) : NewsRepository {
+class NewsRepositoryImpl(private val service: NewsServices) : NewsRepository {
 
-    override fun getTopNews(): Single<List<Article>> {
-        return repo.getTopNews()
-                .map { news -> news.map(articleDomainModelMapper) }
+    override fun getTopNews(country: String, category: String): Single<List<Article>> {
+
+        return service.getTopHeadlines(country = country, category = category)
+                .flattenAsObservable { it.articles }
+                .map {
+                    Article(
+                            id = 0,
+                            title = it.title,
+                            author = it.author ?: "",
+                            image = it.urlToImage ?: "",
+                            publishedAt = it.publishedAt,
+                            sourceId = it.source.id ?: "",
+                            sourceName = it.source.name,
+                            url = it.url
+                    )
+                }.toList()
     }
 
     private val articleDomainModelMapper: (Article) -> Article = { article ->

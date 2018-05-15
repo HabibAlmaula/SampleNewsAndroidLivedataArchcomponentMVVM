@@ -1,5 +1,6 @@
 package com.pratamawijaya.androidnewsarch.di
 
+import com.pratamawijaya.androidnewsarch.data.NewsServices
 import com.pratamawijaya.androidnewsarch.data.repository.NewsRepository
 import com.pratamawijaya.androidnewsarch.data.repository.NewsRepositoryImpl
 import dagger.Module
@@ -9,5 +10,5 @@ import dagger.Provides
 class RepositoryModule {
 
     @Provides
-    fun provideNewsRepo(newsRepositoryImpl: NewsRepositoryImpl): NewsRepository = newsRepositoryImpl
+    fun provideNewsRepo(newsServices: NewsServices): NewsRepository = NewsRepositoryImpl(newsServices)
 }
