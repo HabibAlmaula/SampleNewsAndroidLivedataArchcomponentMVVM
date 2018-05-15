@@ -11,3 +11,7 @@ selain itu pada project ini juga telah menerapkan Dagger 2 untuk Dependency Inje
 - Retrofit
 - Dagger2
 - LiveData
+
+# Todo
+[ ] create fragment for detail news
+[ ] implementation navigation component
