@@ -3,6 +3,8 @@ package com.pratamawijaya.androidnewsarch.ui.news
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
+import com.github.ajalt.timberkt.d
+import com.github.ajalt.timberkt.e
 import com.pratamawijaya.androidnewsarch.data.repository.NewsRepository
 import com.pratamawijaya.androidnewsarch.domain.model.Article
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,13 +24,18 @@ class NewsListViewModel @Inject constructor(private val repo: NewsRepository) : 
     }
 
     fun updateNewsList() {
-        Log.d(TAG, "update news list")
+        d { "update news list" }
         getNewsList()
     }
 
     fun restoreNewsList() {
-        Log.d(TAG, "restore news list")
+        d { "restore news list" }
         stateLiveData.value = DefaultState(obtainCurrentData(), true)
+    }
+
+    fun refreshNewsList() {
+        stateLiveData.value = LoadingState(emptyList(), false)
+        getNewsList()
     }
 
     private fun getNewsList() {
@@ -39,14 +46,15 @@ class NewsListViewModel @Inject constructor(private val repo: NewsRepository) : 
     }
 
     private fun onError(error: Throwable) {
-        Log.e(TAG, "error ${error.localizedMessage}")
+        e { "error ${error.localizedMessage}" }
         stateLiveData.value = ErrorState(error.localizedMessage, obtainCurrentData(), false)
     }
 
     private fun onNewsReceived(news: List<Article>) {
-        Log.d(TAG, "data news received ${news.size}")
+        d { "data received ${news.size}" }
         val currentNews = obtainCurrentData().toMutableList()
         currentNews.addAll(news)
+        d { "current news size ${currentNews.size}" }
         stateLiveData.value = DefaultState(currentNews, true)
     }
 

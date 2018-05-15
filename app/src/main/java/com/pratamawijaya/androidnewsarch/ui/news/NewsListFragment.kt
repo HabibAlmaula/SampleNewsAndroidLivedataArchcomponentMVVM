@@ -119,7 +119,7 @@ class NewsListFragment : Fragment(), NewsListener, SwipeRefreshLayout.OnRefreshL
 
     override fun onRefresh() {
         groupAdapter.clear()
-        viewModel.updateNewsList()
+        viewModel.refreshNewsList()
     }
 
 }
