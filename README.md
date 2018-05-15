@@ -1,4 +1,7 @@
 # Sample MVVM News Application
+
+![home image](ss/home.png){:class="img-responsive"}
+
 Sample app ini dibuat untuk riset mengenai architecture MVVM dan LiveData, dengan tujuan memahami konsep MVVM
 dan bagaimana penggunaan LiveData untuk menyimpan state data sehingga data masih ada ketika device di rotate,
 selain itu pada project ini juga telah menerapkan Dagger 2 untuk Dependency Injection dengan penambahan support untuk android.
@@ -13,9 +16,10 @@ selain itu pada project ini juga telah menerapkan Dagger 2 untuk Dependency Inje
 - LiveData
 
 # Todo
-[ ] create fragment for detail news
-[ ] implementation navigation component
+- [ ] create fragment for detail news
+- [ ] implementation navigation component
 
 ## Reference
 - https://github.com/antonicg/cryptodata
+- News API from https://newsapi.org/
 - ADB
