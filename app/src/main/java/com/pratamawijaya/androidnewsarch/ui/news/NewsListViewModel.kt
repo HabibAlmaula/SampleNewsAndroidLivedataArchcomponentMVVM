@@ -34,8 +34,8 @@ class NewsListViewModel @Inject constructor(private val repo: NewsRepository) : 
         _query.value = update
     }
 
-    data class QueryNewsList(val country: String,
-                             val category: String) {
+    data class QueryNewsList(private val country: String,
+                             private val category: String) {
         fun <T> ifExists(f: (String, String) -> LiveData<T>): LiveData<T> {
             return if (country.isNullOrBlank() || category.isNullOrBlank()) {
                 AbsentLiveData.create()

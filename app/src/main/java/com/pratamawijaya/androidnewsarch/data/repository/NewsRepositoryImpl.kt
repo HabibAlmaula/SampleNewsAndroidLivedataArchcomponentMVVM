@@ -13,7 +13,7 @@ class NewsRepositoryImpl(private val service: NewsServices,
                          private val articleDao: ArticleDao) : NewsRepository {
 
     override fun getTopNews(country: String, category: String): LiveData<Resource<List<Article>>> {
-
+        d { "get top news $country $category" }
         return object : NetworkBoundResource<List<Article>, GetNewsResponse>(appExecutors) {
 
             override fun saveCallResult(item: GetNewsResponse) {
@@ -38,7 +38,7 @@ class NewsRepositoryImpl(private val service: NewsServices,
             }
 
             override fun loadFromDb(): LiveData<List<Article>> {
-                d { "load from db" }
+                d { "load from db ${articleDao.getArticles().value?.size}" }
                 return articleDao.getArticles()
             }
 

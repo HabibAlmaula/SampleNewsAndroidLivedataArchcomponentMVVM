@@ -7,11 +7,15 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import butterknife.BindView
+import butterknife.ButterKnife
 import com.github.ajalt.timberkt.e
 import com.pratamawijaya.androidnewsarch.R
 import com.pratamawijaya.androidnewsarch.data.Resource
@@ -31,6 +35,11 @@ class NewsListFragment : Fragment(), NewsListener, SwipeRefreshLayout.OnRefreshL
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @BindView(R.id.rvNews)
+    lateinit var rvNews: RecyclerView
+    @BindView(R.id.loading)
+    lateinit var swipeRefresh: SwipeRefreshLayout
+
     private lateinit var viewModel: NewsListViewModel
     private val groupAdapter = GroupAdapter<ViewHolder>()
     private var isLoading = false
@@ -39,20 +48,18 @@ class NewsListFragment : Fragment(), NewsListener, SwipeRefreshLayout.OnRefreshL
         fun newInstance() = NewsListFragment()
     }
 
-
     // state observer
-
     private val stateObserver = Observer<Resource<List<Article>>> { state ->
         when (state) {
             is Resource.Loading -> {
-                isLoading = false
+                isLoading = true
+                swipeRefresh.isRefreshing = true
             }
 
             is Resource.Success -> {
                 isLoading = false
+                swipeRefresh.isRefreshing = false
 
-//                    loading.isRefreshing = false
-//
                 state.data.let {
                     it?.map {
                         Log.d(TAG, "data -> ${it.title} ${it.sourceName}")
@@ -67,46 +74,14 @@ class NewsListFragment : Fragment(), NewsListener, SwipeRefreshLayout.OnRefreshL
                 }
             }
 
-            is Resource.Failure -> {
+            is Resource.Error -> {
                 isLoading = false
+                swipeRefresh.isRefreshing = false
                 e { "error ${state.errorMsg}" }
             }
         }
 
     }
-//    private val stateObserver = Observer<NewsListState> { state ->
-//        state?.let {
-//            when (state) {
-//                is DefaultState -> {
-//                    isLoading = false
-//                    loading.isRefreshing = false
-//
-//                    it.data.map {
-//                        Log.d(TAG, "data -> ${it.title} ${it.sourceName}")
-//                    }
-//
-//                    // add data to adapter
-//                    it.data.map {
-//                        Section().apply {
-//                            add(NewsItem(it, this@NewsListFragment))
-//                            groupAdapter.add(this)
-//                        }
-//                    }
-//
-//                }
-//                is LoadingState -> {
-//                    Log.d(TAG, "loading state")
-//                    loading.isRefreshing = true
-//                    isLoading = true
-//                }
-//
-//                is ErrorState -> {
-//                    Log.e(TAG, "error state")
-//                }
-//            }
-//        }
-//    }
-
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -120,34 +95,30 @@ class NewsListFragment : Fragment(), NewsListener, SwipeRefreshLayout.OnRefreshL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ButterKnife.bind(this, view)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NewsListViewModel::class.java)
-        viewModel.setQuery("us", "technoloy")
+        viewModel.setQuery("us", "technology")
 
-        viewModel.listArticle.observe(this, stateObserver)
+        observerViewModel()
 
         setupRv()
-//
-//        observerViewModel()
-//        savedInstanceState?.let {
-//            viewModel.restoreNewsList()
-//        } ?: viewModel.updateNewsList()
     }
 
     private fun setupRv() {
-//        rvNews.apply {
-//            layoutManager = LinearLayoutManager(activity)
-//            adapter = groupAdapter
-//        }
+        rvNews.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = groupAdapter
+        }
     }
 
     private fun observerViewModel() {
-//        viewModel.stateLiveData.observe(this, stateObserver)
+        viewModel.listArticle.observe(this, stateObserver)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        viewModel.stateLiveData.removeObserver(stateObserver)
+        viewModel.listArticle.removeObserver(stateObserver)
     }
 
     override fun onNewsClick(article: Article) {

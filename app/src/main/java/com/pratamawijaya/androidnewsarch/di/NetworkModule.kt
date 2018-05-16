@@ -1,6 +1,7 @@
 package com.pratamawijaya.androidnewsarch.di
 
 import com.pratamawijaya.androidnewsarch.data.NewsServices
+import com.pratamawijaya.androidnewsarch.utils.LiveDataCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -21,6 +22,7 @@ class NetworkModule {
     fun providesRetrofit(okHttpClient: OkHttpClient) =
             Retrofit.Builder()
                     .baseUrl("https://newsapi.org/v2/")
+                    .addCallAdapterFactory(LiveDataCallAdapterFactory())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient)
