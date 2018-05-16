@@ -1,8 +1,7 @@
 package com.pratamawijaya.androidnewsarch.data
 
+import android.arch.lifecycle.LiveData
 import com.pratamawijaya.androidnewsarch.data.model.response.GetNewsResponse
-import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,7 +13,7 @@ interface NewsServices {
 
     @GET("top-headlines")
     fun getTopHeadlines(@Query("country") country: String,
-                        @Query("category") category: String): Flowable<GetNewsResponse>
+                        @Query("category") category: String): LiveData<ApiResponse<GetNewsResponse>>
 
     @GET("everything")
     fun getEverything(@Query("q") query: String,

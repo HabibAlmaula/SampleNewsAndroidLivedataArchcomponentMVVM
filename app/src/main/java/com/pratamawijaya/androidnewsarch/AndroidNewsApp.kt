@@ -18,7 +18,8 @@ class AndroidNewsApp : Application(), HasActivityInjector {
 
     override fun onCreate() {
         super.onCreate()
-        DaggerApplicationComponent.create().inject(this)
+        DaggerApplicationComponent.builder().application(this)
+                .build().inject(this)
 
         if(BuildConfig.DEBUG)Timber.plant(Timber.DebugTree())
     }

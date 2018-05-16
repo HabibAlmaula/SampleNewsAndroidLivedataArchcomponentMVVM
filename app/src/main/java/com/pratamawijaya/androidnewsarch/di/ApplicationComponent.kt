@@ -1,15 +1,17 @@
 package com.pratamawijaya.androidnewsarch.di
 
+import android.app.Application
 import com.pratamawijaya.androidnewsarch.AndroidNewsApp
 import com.pratamawijaya.androidnewsarch.ui.home.HomeActivityModule
+import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
 @Component(modules = arrayOf(
-        AppModule::class,
         AndroidSupportInjectionModule::class,
+        AppModule::class,
         ViewModelFactoryModule::class,
         NetworkModule::class,
         RepositoryModule::class,
@@ -17,5 +19,17 @@ import javax.inject.Singleton
         HomeActivityModule::class
 ))
 interface ApplicationComponent {
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun application(application: Application): Builder
+
+        fun build(): ApplicationComponent
+    }
+
     fun inject(app: AndroidNewsApp)
 }
+
+//interface ApplicationComponent {
+//    fun inject(app: AndroidNewsApp)
+//}
