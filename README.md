@@ -18,7 +18,7 @@ selain itu pada project ini juga telah menerapkan Dagger 2 untuk Dependency Inje
 # Todo
 - [ ] create fragment for detail news
 - [ ] implement navigation component
-- [ ] implement room for save data locally
+- [x] implement room for save data locally
 - [ ] favorite feature
 
 ## Reference
