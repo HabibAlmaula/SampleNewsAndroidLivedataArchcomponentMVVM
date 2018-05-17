@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-
 import com.pratamawijaya.androidnewsarch.R
 import com.pratamawijaya.androidnewsarch.domain.model.Article
 import com.pratamawijaya.androidnewsarch.ui.news.rvitem.NewsItem
@@ -92,6 +91,7 @@ class NewsListFragment : Fragment(), NewsListener, SwipeRefreshLayout.OnRefreshL
         loading.setOnRefreshListener(this)
 
         observerViewModel()
+
         savedInstanceState?.let {
             viewModel.restoreNewsList()
         } ?: viewModel.updateNewsList()

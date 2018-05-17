@@ -2,6 +2,7 @@ package com.pratamawijaya.androidnewsarch
 
 import android.app.Activity
 import android.app.Application
+import com.facebook.stetho.Stetho
 import com.pratamawijaya.androidnewsarch.di.DaggerApplicationComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -18,7 +19,10 @@ class AndroidNewsApp : Application(), HasActivityInjector {
 
     override fun onCreate() {
         super.onCreate()
-        DaggerApplicationComponent.create().inject(this)
+        DaggerApplicationComponent.builder().application(this)
+                .build().inject(this)
+
+        Stetho.initializeWithDefaults(this)
 
         if(BuildConfig.DEBUG)Timber.plant(Timber.DebugTree())
     }

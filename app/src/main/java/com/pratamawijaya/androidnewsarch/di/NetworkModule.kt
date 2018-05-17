@@ -1,5 +1,6 @@
 package com.pratamawijaya.androidnewsarch.di
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.pratamawijaya.androidnewsarch.data.NewsServices
 import dagger.Module
 import dagger.Provides
@@ -34,6 +35,7 @@ class NetworkModule {
         }
         return OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .addNetworkInterceptor(StethoInterceptor())
                 .addInterceptor({ chain ->
                     val request = chain.request().newBuilder().addHeader("X-Api-Key", API_KEY).build()
                     chain.proceed(request)
