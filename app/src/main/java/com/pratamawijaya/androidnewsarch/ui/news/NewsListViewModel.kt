@@ -2,7 +2,6 @@ package com.pratamawijaya.androidnewsarch.ui.news
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.e
 import com.pratamawijaya.androidnewsarch.data.repository.NewsRepository
